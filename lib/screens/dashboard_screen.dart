@@ -27,7 +27,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final WebSocketService _wsService = Get.find<WebSocketService>();
-  final RoverBluetoothService _btService = Get.put(RoverBluetoothService());
+  final RoverBluetoothService _btService = Get.find<RoverBluetoothService>();
   final ConnectivityManager _connManager = Get.find<ConnectivityManager>();
   final AuthService _authService = Get.find<AuthService>();
   int _selectedIndex = 0;

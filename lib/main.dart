@@ -24,12 +24,12 @@ void main() async {
   ]);
 
   // Initialize services in correct order
-  Get.put(MissionLogService());
-  Get.put(WebSocketService());
-  Get.put(RoverBluetoothService());
-  Get.put(ConnectivityManager());
-  Get.put(AuthService());
-  Get.put(SystemStatusService());
+  Get.put(MissionLogService(), permanent: true);
+  Get.put(WebSocketService(), permanent: true);
+  Get.put(RoverBluetoothService(), permanent: true);
+  Get.put(ConnectivityManager(), permanent: true);
+  Get.put(AuthService(), permanent: true);
+  Get.put(SystemStatusService(), permanent: true);
 
   runApp(const SentinelRoverApp());
 }
