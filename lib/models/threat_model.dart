@@ -7,6 +7,7 @@ class ThreatModel {
   final DateTime timestamp;
   final bool neutralized;
   final List<String> alertsSent;
+  final double confidence;
 
   ThreatModel({
     required this.id,
@@ -17,6 +18,7 @@ class ThreatModel {
     required this.timestamp,
     this.neutralized = false,
     this.alertsSent = const [],
+    required this.confidence,
   });
 
   factory ThreatModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class ThreatModel {
       alertsSent: json['alerts_sent'] != null
           ? List<String>.from(json['alerts_sent'])
           : [],
+      confidence: (json['confidence'] ?? 0.75).toDouble(),
     );
   }
 
@@ -46,6 +49,7 @@ class ThreatModel {
       'timestamp': timestamp.toIso8601String(),
       'neutralized': neutralized,
       'alerts_sent': alertsSent,
+      'confidence': confidence,
     };
   }
 }

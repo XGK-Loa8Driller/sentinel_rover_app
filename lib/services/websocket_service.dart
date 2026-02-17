@@ -4,7 +4,7 @@ import '../models/threat_model.dart';
 
 class WebSocketService extends GetxController {
   late IO.Socket socket;
-  
+
   // Observable states
   var isConnected = false.obs;
   var roverStatus = 'STANDBY'.obs;
@@ -56,7 +56,7 @@ class WebSocketService extends GetxController {
         final threat = ThreatModel.fromJson(data);
         recentThreats.insert(0, threat);
         threatsDetected.value = recentThreats.length;
-        
+
         // Update threat level
         _updateThreatLevel();
       });
@@ -75,6 +75,7 @@ class WebSocketService extends GetxController {
             timestamp: recentThreats[index].timestamp,
             neutralized: true,
             alertsSent: recentThreats[index].alertsSent,
+            confidence: (data['confidence'] ?? 0.75).toDouble(),
           );
           recentThreats.refresh();
           _updateThreatLevel();
@@ -90,7 +91,7 @@ class WebSocketService extends GetxController {
 
   void _updateThreatLevel() {
     final activeThreat = recentThreats.where((t) => !t.neutralized).toList();
-    
+
     if (activeThreat.any((t) => t.severity.toLowerCase() == 'critical')) {
       threatLevel.value = 'CRITICAL';
     } else if (activeThreat.any((t) => t.severity.toLowerCase() == 'high')) {
@@ -103,12 +104,31 @@ class WebSocketService extends GetxController {
   }
 
   void _simulateData() {
-    // Simulate rover status updates every 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      if (isConnected.value) {
-        batteryLevel.value = (batteryLevel.value - 1).clamp(0, 100);
-        _simulateData();
-      }
+    Future.delayed(const Duration(seconds: 3), () {
+      // REMOVE connection check temporarily
+      // if (isConnected.value) {
+
+      recentThreats.insert(
+        0,
+        ThreatModel(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          severity: 'high',
+          latitude: latitude.value,
+          longitude: longitude.value,
+          distance: 120,
+          timestamp: DateTime.now(),
+          neutralized: false,
+          alertsSent: ['HQ'],
+          confidence: 0.82,
+        ),
+      );
+
+      threatsDetected.value = recentThreats.length;
+      _updateThreatLevel();
+
+      // }
+
+      _simulateData();
     });
   }
 

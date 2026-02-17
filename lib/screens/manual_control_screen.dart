@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../services/mission_log_service.dart';
 import 'dart:math' as math;
 import '../services/system_status_service.dart';
+import '../utils/haptic_helper.dart';
 
 class ManualControlScreen extends StatefulWidget {
   const ManualControlScreen({super.key});
@@ -460,7 +461,10 @@ class _ManualControlScreenState extends State<ManualControlScreen> {
         width: double.infinity,
         height: 60,
         child: ElevatedButton(
-          onPressed: () => _authService.emergencyStop(),
+          onPressed: () {
+            HapticHelper.heavy();
+            _authService.emergencyStop();
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFFF3366),
             shape: RoundedRectangleBorder(
@@ -515,6 +519,8 @@ class _ManualControlScreenState extends State<ManualControlScreen> {
   }
 
   void _fireLaser() async {
+    HapticHelper.heavy();
+
     if (await _authService.requestPermission(
         'fire_laser', 'Manual laser engagement')) {
       _connManager.sendCommand('fire_laser');
@@ -544,6 +550,8 @@ class _ManualControlScreenState extends State<ManualControlScreen> {
   }
 
   void _scanArea() {
+    HapticHelper.medium();
+
     _connManager.sendCommand('scan_area');
     _logService.log('Area scan initiated', LogLevel.info);
 

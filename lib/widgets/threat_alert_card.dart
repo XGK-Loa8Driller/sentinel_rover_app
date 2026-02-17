@@ -81,6 +81,8 @@ class ThreatAlertCard extends StatelessWidget {
             'Distance',
             '${threat.distance.toStringAsFixed(0)}m',
           ),
+          const SizedBox(height: 12),
+          _buildConfidenceBar(threat.confidence ?? 0.75),
           if (threat.alertsSent.isNotEmpty) ...[
             const SizedBox(height: 12),
             Container(
@@ -91,9 +93,9 @@ class ThreatAlertCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.notifications_active,
-                    color: const Color(0xFF00FF88),
+                    color: Color(0xFF00FF88),
                     size: 16,
                   ),
                   const SizedBox(width: 8),
@@ -167,5 +169,51 @@ class ThreatAlertCard extends StatelessWidget {
     } else {
       return '${difference.inDays}d ago';
     }
+  }
+
+  Widget _buildConfidenceBar(double confidence) {
+    final percentage = (confidence * 100).toStringAsFixed(0);
+
+    Color barColor;
+
+    if (confidence > 0.8) {
+      barColor = const Color(0xFF00FF88); // Green
+    } else if (confidence > 0.5) {
+      barColor = const Color(0xFFFF9500); // Orange
+    } else {
+      barColor = const Color(0xFFFF3366); // Red
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'AI CONFIDENCE: $percentage%',
+          style: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: barColor,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          height: 6,
+          decoration: BoxDecoration(
+            color: Colors.white10,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: confidence.clamp(0.0, 1.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: barColor,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
