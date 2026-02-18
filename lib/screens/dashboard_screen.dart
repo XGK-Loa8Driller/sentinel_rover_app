@@ -17,6 +17,7 @@ import '../services/bluetooth_service.dart';
 import '../services/connectivity_manager.dart';
 import '../services/auth_service.dart';
 import '../widgets/system_status_bar.dart';
+import '../widgets/tactical_banner.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -55,6 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: SafeArea(
                 child: Column(
                   children: [
+                    TacticalBanner(), // 🔥 ADD THIS LINE
                     _buildHeader(),
                     Expanded(child: _buildContent()),
                   ],
@@ -135,6 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onPressed: () => Get.to(() => const MissionLogScreen()),
               ),
 
+              /// Connectivity Manager Status
               Obx(() {
                 final isConnected = _connManager.connectionStatus.value ==
                     ConnectionStatus.connected;
@@ -163,12 +166,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 );
               }),
+
+              const SizedBox(width: 8),
+
+              /// 🔥 WebSocket Status Badge (NEW)
+              Obx(() {
+                final status = _wsService.roverStatus.value;
+
+                Color color;
+
+                switch (status) {
+                  case 'ACTIVE':
+                    color = const Color(0xFF00FF88);
+                    break;
+                  case 'RECONNECTING':
+                    color = const Color(0xFFFF9500);
+                    break;
+                  case 'OFFLINE':
+                    color = const Color(0xFFFF3366);
+                    break;
+                  default:
+                    color = Colors.grey;
+                }
+
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: color),
+                  ),
+                  child: Text(
+                    status,
+                    style: GoogleFonts.inter(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }),
             ],
           ),
 
           const SizedBox(height: 16),
 
-          /// THREAT LEVEL BAR
+          /// THREAT LEVEL BAR (UNCHANGED)
           Obx(() => Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(

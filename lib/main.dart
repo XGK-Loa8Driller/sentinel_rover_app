@@ -12,6 +12,7 @@ import 'services/connectivity_manager.dart';
 import 'services/mission_log_service.dart';
 import 'services/auth_service.dart';
 import 'services/system_status_service.dart';
+import 'services/navigation_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ void main() async {
   Get.put(ConnectivityManager(), permanent: true);
   Get.put(AuthService(), permanent: true);
   Get.put(SystemStatusService(), permanent: true);
+  Get.put(NavigationService(), permanent: true);
 
   runApp(const SentinelRoverApp());
 }
