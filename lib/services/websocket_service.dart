@@ -83,7 +83,6 @@ class WebSocketService extends GetxController {
       });
 
       // Simulate some data for demo
-      _simulateData();
     } catch (e) {
       print('Error connecting to server: $e');
     }
@@ -101,35 +100,6 @@ class WebSocketService extends GetxController {
     } else {
       threatLevel.value = 'LOW';
     }
-  }
-
-  void _simulateData() {
-    Future.delayed(const Duration(seconds: 3), () {
-      // REMOVE connection check temporarily
-      // if (isConnected.value) {
-
-      recentThreats.insert(
-        0,
-        ThreatModel(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          severity: 'high',
-          latitude: latitude.value,
-          longitude: longitude.value,
-          distance: 120,
-          timestamp: DateTime.now(),
-          neutralized: false,
-          alertsSent: ['HQ'],
-          confidence: 0.82,
-        ),
-      );
-
-      threatsDetected.value = recentThreats.length;
-      _updateThreatLevel();
-
-      // }
-
-      _simulateData();
-    });
   }
 
   void disconnect() {
