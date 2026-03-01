@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../config/app_config.dart';
 
 class NavigationService {
-  static const String _apiKey = "YOUR_GOOGLE_API_KEY";
+  static const String _apiKey = AppConfig.googleMapsApiKey;
 
   Future<Map<String, dynamic>?> validateRoute(
     double originLat,
@@ -22,6 +23,7 @@ class NavigationService {
     if (response.statusCode != 200) return null;
 
     final data = jsonDecode(response.body);
+    print("Directions API Response: $data");
 
     if (data["status"] == "ZERO_RESULTS") return null;
     if (data["routes"] == null || data["routes"].isEmpty) return null;

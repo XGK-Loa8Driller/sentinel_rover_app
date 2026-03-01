@@ -58,7 +58,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     TacticalBanner(), // 🔥 ADD THIS LINE
                     _buildHeader(),
-                    Expanded(child: _buildContent()),
+                    Expanded(
+                      child: _selectedIndex == 1
+                          ? const RealTimeThreatMap()
+                          : _buildNonMapContent(),
+                    ),
                   ],
                 ),
               ),
@@ -278,32 +282,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildContent() {
-    switch (_selectedIndex) {
-      case 0:
-        return _buildOverviewTab();
-      case 1:
-        return _buildMapTab();
-      case 2:
-        return _buildAlertsTab();
-      case 3:
-        return _buildSettingsTab();
-      default:
-        return _buildOverviewTab();
-    }
-  }
-
   Widget _buildOverviewTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // System Mode Selector
           const SystemModeSelector(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
-          // Connection mode selector
           _buildConnectionModeSelector(),
           const SizedBox(height: 24),
 
@@ -317,61 +304,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          const CameraOverlayWidget(cameraFeed: LiveCameraFeed()),
+
+          /// 🔒 FIXED HEIGHT CAMERA (SAFE)
+          SizedBox(
+            height: 260,
+            child: const LiveCameraFeed(),
+          ),
+
           const SizedBox(height: 24),
 
-          Text(
-            'TELEMETRY',
-            style: GoogleFonts.orbitron(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(height: 16),
           const EnhancedTelemetryDashboard(),
           const SizedBox(height: 24),
 
-          Text(
-            'ROVER STATUS',
-            style: GoogleFonts.orbitron(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(height: 16),
           const RoverStatusCard(),
           const SizedBox(height: 24),
 
-          Text(
-            'RECENT DETECTIONS',
-            style: GoogleFonts.orbitron(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(height: 16),
           Obx(
             () => _wsService.recentThreats.isEmpty
                 ? _buildEmptyState()
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _wsService.recentThreats.length,
-                    itemBuilder: (context, index) {
-                      final threat = _wsService.recentThreats[index];
-                      return ThreatAlertCard(threat: threat);
-                    },
+                : Column(
+                    children: _wsService.recentThreats
+                        .map((threat) => ThreatAlertCard(threat: threat))
+                        .toList(),
                   ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildNonMapContent() {
+    switch (_selectedIndex) {
+      case 0:
+        return _buildOverviewTab();
+      case 2:
+        return _buildAlertsTab();
+      case 3:
+        return _buildSettingsTab();
+      default:
+        return _buildOverviewTab();
+    }
   }
 
   Widget _buildMapTab() {

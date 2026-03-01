@@ -7,6 +7,8 @@ import '../services/mission_log_service.dart';
 import 'dart:math' as math;
 import '../services/system_status_service.dart';
 import '../utils/haptic_helper.dart';
+import 'car_controller_screen.dart';
+import 'package:flutter/services.dart';
 
 class ManualControlScreen extends StatefulWidget {
   const ManualControlScreen({super.key});
@@ -65,6 +67,8 @@ class _ManualControlScreenState extends State<ManualControlScreen> {
                   _buildCameraControl(),
                   const SizedBox(height: 30),
                   _buildActionButtons(),
+                  const SizedBox(height: 20),
+                  _buildCarControllerButton(context),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -596,4 +600,42 @@ class CrosshairPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+Widget _buildCarControllerButton(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: SizedBox(
+      width: double.infinity,
+      height: 55,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const CarControllerScreen(),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF00F5FF).withOpacity(0.15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(
+              color: Color(0xFF00F5FF),
+            ),
+          ),
+        ),
+        child: Text(
+          "OPEN CAR CONTROLLER",
+          style: GoogleFonts.orbitron(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF00F5FF),
+            letterSpacing: 2,
+          ),
+        ),
+      ),
+    ),
+  );
 }

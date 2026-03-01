@@ -77,7 +77,8 @@ class _LiveCameraFeedState extends State<LiveCameraFeed> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      width: double.infinity,
+      height: double.infinity,
       decoration: BoxDecoration(
         color: const Color(0xFF151B2B),
         borderRadius: BorderRadius.circular(16),
@@ -109,9 +110,9 @@ class _LiveCameraFeedState extends State<LiveCameraFeed> {
 
             // Overlay controls
             Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+              top: 12,
+              left: 12,
+              right: 12,
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -222,8 +223,8 @@ class _LiveCameraFeedState extends State<LiveCameraFeed> {
             // Recording indicator (if needed)
             if (_isStreaming)
               Positioned(
-                top: 50,
-                right: 12,
+                top: 60,
+                right: 16,
                 child: Container(
                   width: 12,
                   height: 12,
